@@ -109,9 +109,9 @@ main() {
     local failed=0
     for skill in "${!skills_to_install[@]}"; do
         if install_skill "$skill"; then
-            ((installed++))
+            installed=$((installed + 1))
         else
-            ((failed++))
+            failed=$((failed + 1))
         fi
     done
 
