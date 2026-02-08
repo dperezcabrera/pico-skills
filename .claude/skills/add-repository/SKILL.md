@@ -1,40 +1,31 @@
 ---
-name: pico-repository
-description: Creates SQLAlchemy repositories and entities with pico-sqlalchemy
+name: add-repository
+description: Add a SQLAlchemy entity and repository with pico-sqlalchemy. Use when creating database models, repositories, or adding database queries.
 argument-hint: [entity name]
 ---
 
-# Pico-SQLAlchemy Repository Creator
+# Add Repository
 
-Create a repository for: $ARGUMENTS
+Create entity and repository for: $ARGUMENTS
 
-## Rules
+Read the codebase to understand existing models and patterns, then create the entity and repository.
 
-- Entities extend `AppBase` from `pico_sqlalchemy`
-- Repositories use `@repository` decorator (auto-registers as singleton component with transactional methods)
-- Use `@query` for declarative queries (body is ignored, query auto-executed)
-- Use `@transactional` for explicit transaction control
-- Use `get_session(self.manager)` to access the current `AsyncSession`
-- `SessionManager` is injected automatically by pico-ioc
-
-## Entity
+## 1. Entity
 
 ```python
-from sqlalchemy import String
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy import String, ForeignKey
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from pico_sqlalchemy import AppBase
 
 class $ARGUMENTS(AppBase):
-    __tablename__ = "${arguments_snake}s"
+    __tablename__ = "<plural_snake_case>"
 
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(100))
     active: Mapped[bool] = mapped_column(default=True)
 ```
 
-## Repository
-
-### With Declarative Queries
+## 2. Repository with Declarative Queries
 
 ```python
 from pico_sqlalchemy import repository, query, get_session, SessionManager, Page, PageRequest
@@ -57,42 +48,20 @@ class ${ARGUMENTS}Repository:
     async def find_by_name(self, name: str) -> $ARGUMENTS | None:
         ...
 
-    @query(expr="active = :active", paged=True)
-    async def find_active(self, active: bool, page: PageRequest) -> Page[$ARGUMENTS]:
+    @query(expr="active = true", paged=True)
+    async def find_all_active(self, page: PageRequest) -> Page[$ARGUMENTS]:
         ...
 ```
 
-### With Raw SQL
+### Raw SQL Queries
 
 ```python
-@repository(entity=$ARGUMENTS)
-class ${ARGUMENTS}Repository:
-    def __init__(self, manager: SessionManager):
-        self.manager = manager
-
-    @query(sql="SELECT * FROM ${arguments_snake}s WHERE name LIKE :pattern")
+    @query(sql="SELECT * FROM items WHERE name LIKE :pattern ORDER BY name")
     async def search(self, pattern: str) -> list[$ARGUMENTS]:
         ...
 ```
 
-### With Explicit Transactions
-
-```python
-from pico_sqlalchemy import repository, transactional, get_session, SessionManager
-
-@repository
-class ${ARGUMENTS}Repository:
-    def __init__(self, manager: SessionManager):
-        self.manager = manager
-
-    @transactional(propagation="REQUIRES_NEW")
-    async def save_in_new_tx(self, entity: $ARGUMENTS) -> $ARGUMENTS:
-        session = get_session(self.manager)
-        session.add(entity)
-        return entity
-```
-
-## Service Layer
+## 3. Service Layer
 
 ```python
 from pico_ioc import component
@@ -116,11 +85,11 @@ class ${ARGUMENTS}Service:
         return item
 ```
 
-## Transaction Propagation Modes
+## Transaction Propagation
 
 | Mode | Behavior |
 |------|----------|
-| `REQUIRED` (default) | Join existing or create new |
+| `REQUIRED` | Join existing or create new (default) |
 | `REQUIRES_NEW` | Always start a fresh transaction |
 | `SUPPORTS` | Join if exists, otherwise non-transactional |
 | `MANDATORY` | Must have active transaction, else error |
@@ -130,7 +99,7 @@ class ${ARGUMENTS}Service:
 ## Checklist
 
 - [ ] Entity with correct column types and constraints
-- [ ] Repository with `SessionManager` injected
-- [ ] Declarative `@query` methods for common lookups
+- [ ] Repository with `SessionManager` injected via constructor
+- [ ] `@query` methods for common lookups
 - [ ] Service layer with `@transactional` for business operations
 - [ ] Indexes on frequently queried columns

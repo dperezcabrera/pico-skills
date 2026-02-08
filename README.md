@@ -1,21 +1,29 @@
 # Pico-Skills
 
-[Claude Code](https://docs.anthropic.com/en/docs/claude-code) skills for the [pico-framework](https://github.com/dperezcabrera) ecosystem.
+[Claude Code](https://code.claude.com) skills for the [pico-framework](https://github.com/dperezcabrera) ecosystem.
 
-These skills provide AI-assisted code generation following pico-framework patterns and best practices.
+AI-assisted code generation following pico-framework patterns and best practices.
 
 ## Available Skills
 
-| Skill | Command | Description |
-|-------|---------|-------------|
-| **Component** | `/pico-component` | Create pico-ioc components with DI, scopes, factories, interceptors |
-| **Repository** | `/pico-repository` | Create SQLAlchemy entities and repositories with pico-sqlalchemy |
-| **Controller** | `/pico-controller` | Create FastAPI controllers with pico-fastapi |
-| **Task** | `/pico-task` | Create Celery tasks with pico-celery |
-| **Validate** | `/pico-validate` | Add Pydantic validation with pico-pydantic |
-| **Agent** | `/pico-agent` | Create LLM agents and tools with pico-agent |
-| **Init** | `/pico-init` | Scaffold a new pico-boot application |
-| **Tests** | `/pico-tests` | Generate tests for any pico-framework component |
+### User-invocable (slash commands)
+
+| Command | Package | Description |
+|---------|---------|-------------|
+| `/add-component` | pico-ioc | Add components, factories, interceptors, event subscribers, settings |
+| `/add-repository` | pico-sqlalchemy | Add SQLAlchemy entities and repositories with transactions |
+| `/add-controller` | pico-fastapi | Add FastAPI controllers with route decorators |
+| `/add-celery-task` | pico-celery | Add Celery worker tasks and client senders |
+| `/add-validation` | pico-pydantic | Add Pydantic validation to component methods |
+| `/add-agent` | pico-agent | Add LLM agents and tools |
+| `/add-app` | pico-boot | Scaffold a new pico-boot application |
+| `/add-tests` | all | Generate tests for any pico-framework component |
+
+### Auto-loaded by Claude (background knowledge)
+
+| Skill | Description |
+|-------|-------------|
+| `pico-conventions` | API reference and patterns for all pico-* packages. Loaded automatically when Claude detects pico-framework usage. |
 
 ## Installation
 
@@ -24,8 +32,7 @@ These skills provide AI-assisted code generation following pico-framework patter
 Copy the skills into your project so all contributors benefit:
 
 ```bash
-# From your project root
-cp -r path/to/pico-skills/.claude .claude
+cp -r path/to/pico-skills/.claude/skills/ my-project/.claude/skills/
 ```
 
 ### User-level
@@ -41,25 +48,39 @@ cp -r path/to/pico-skills/.claude/skills/* ~/.claude/skills/
 Copy only the skills you need:
 
 ```bash
-# Example: only pico-ioc and pico-sqlalchemy skills
 mkdir -p .claude/skills
-cp path/to/pico-skills/.claude/skills/pico-component.md .claude/skills/
-cp path/to/pico-skills/.claude/skills/pico-repository.md .claude/skills/
+cp -r path/to/pico-skills/.claude/skills/add-component .claude/skills/
+cp -r path/to/pico-skills/.claude/skills/add-repository .claude/skills/
 ```
 
 ## Usage
 
-In Claude Code, invoke any skill with its slash command:
+```
+/add-component UserService
+/add-repository Product
+/add-controller /api/orders
+/add-celery-task send_notification
+/add-validation UserService
+/add-agent support_bot
+/add-app my-app
+/add-tests UserService
+```
+
+## Skill Structure
+
+Each skill follows the [Claude Code skills standard](https://code.claude.com/docs/en/skills):
 
 ```
-/pico-component UserService
-/pico-repository Product
-/pico-controller /api/orders
-/pico-task send_notification
-/pico-validate UserService
-/pico-agent support_bot
-/pico-init my-app
-/pico-tests UserService
+.claude/skills/
+    add-component/SKILL.md       # User-invocable task
+    add-repository/SKILL.md
+    add-controller/SKILL.md
+    add-celery-task/SKILL.md
+    add-validation/SKILL.md
+    add-agent/SKILL.md
+    add-app/SKILL.md             # User-invocable, model cannot auto-invoke
+    add-tests/SKILL.md
+    pico-conventions/SKILL.md    # Background knowledge, auto-loaded by Claude
 ```
 
 ## Pico-Framework Packages
@@ -76,7 +97,7 @@ In Claude Code, invoke any skill with its slash command:
 
 ## Requirements
 
-- [Claude Code](https://docs.anthropic.com/en/docs/claude-code) CLI
+- [Claude Code](https://code.claude.com) CLI
 - Python >= 3.11
 - Relevant pico-framework packages installed in your project
 
