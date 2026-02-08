@@ -27,30 +27,36 @@ AI-assisted code generation following pico-framework patterns and best practices
 
 ## Installation
 
-### Project-level (recommended)
-
-Copy the skills into your project so all contributors benefit:
+### All skills (recommended)
 
 ```bash
-cp -r path/to/pico-skills/.claude/skills/ my-project/.claude/skills/
+curl -sL https://raw.githubusercontent.com/dperezcabrera/pico-skills/main/install.sh | bash
 ```
 
-### User-level
-
-Install for all your projects:
+### Only the packages you use
 
 ```bash
-cp -r path/to/pico-skills/.claude/skills/* ~/.claude/skills/
+curl -sL https://raw.githubusercontent.com/dperezcabrera/pico-skills/main/install.sh | bash -s -- sqlalchemy fastapi
 ```
 
-### Cherry-pick
+Base skills (`pico-conventions`, `add-component`, `add-tests`) are always included.
 
-Copy only the skills you need:
+### Available packages
+
+| Package | Skill installed |
+|---------|-----------------|
+| `ioc` | `add-component` (included by default) |
+| `boot` | `add-app` |
+| `fastapi` | `add-controller` |
+| `sqlalchemy` | `add-repository` |
+| `celery` | `add-celery-task` |
+| `pydantic` | `add-validation` |
+| `agent` | `add-agent` |
+
+### User-level (all projects)
 
 ```bash
-mkdir -p .claude/skills
-cp -r path/to/pico-skills/.claude/skills/add-component .claude/skills/
-cp -r path/to/pico-skills/.claude/skills/add-repository .claude/skills/
+cd ~ && curl -sL https://raw.githubusercontent.com/dperezcabrera/pico-skills/main/install.sh | bash
 ```
 
 ## Usage
