@@ -1,21 +1,18 @@
 ---
-name: pico-task
-description: Creates Celery tasks integrated with pico-ioc via pico-celery
+name: add-celery-task
+description: Add a Celery task with pico-celery. Use when creating background tasks, async workers, or task clients.
 argument-hint: [task name]
 ---
 
-# Pico-Celery Task Creator
+# Add Celery Task
 
 Create a Celery task: $ARGUMENTS
 
-## Rules
+Read the codebase to understand existing tasks and patterns, then create the task.
 
-- Worker-side tasks use `@task("task.name")` on `async def` methods
-- Client-side senders use `@send_task("task.name")` on methods in a `@celery` class
-- Task names must match between worker and client
-- All imports from `pico_celery`
+## Worker-Side Task
 
-## Worker-Side Task Definition
+Worker methods must be `async def`. They are auto-registered by `PicoTaskRegistrar` at startup.
 
 ```python
 from pico_ioc import component
@@ -32,9 +29,9 @@ class ${ARGUMENTS}Worker:
         return {"status": "done", "item_id": item_id}
 ```
 
-Tasks are auto-registered by `PicoTaskRegistrar` at startup.
-
 ## Client-Side Task Sender
+
+The method body is never executed — calling it sends the task to the Celery broker and returns an `AsyncResult`.
 
 ```python
 from pico_celery import celery, send_task, CeleryClient
@@ -43,29 +40,13 @@ from pico_celery import celery, send_task, CeleryClient
 class ${ARGUMENTS}Client(CeleryClient):
     @send_task("tasks.$ARGUMENTS")
     def process(self, item_id: int):
-        pass  # Body is never executed; sends task to Celery broker
+        pass
 ```
 
-Calling `client.process(42)` returns a Celery `AsyncResult`.
-
-## Configuration
+## Complete Example
 
 ```python
-from dataclasses import dataclass
-from pico_ioc import configured
-
-@configured(prefix="celery")
-@dataclass
-class CelerySettings:
-    broker_url: str = "redis://localhost:6379/0"
-    backend_url: str = "redis://localhost:6379/1"
-    task_track_started: bool = True
-```
-
-## Complete Example (Worker + Client)
-
-```python
-# tasks.py - Worker side
+# worker.py
 from pico_ioc import component
 from pico_celery import task
 
@@ -79,7 +60,7 @@ class EmailWorker:
         await self.email_service.send(to=to, subject=subject, body=body)
         return {"sent_to": to}
 
-# client.py - Client side (e.g., from a FastAPI controller)
+# client.py
 from pico_celery import celery, send_task, CeleryClient
 
 @celery
@@ -88,7 +69,7 @@ class EmailClient(CeleryClient):
     def send_email(self, to: str, subject: str, body: str):
         pass
 
-# usage in a service
+# usage.py
 @component
 class OrderService:
     def __init__(self, email_client: EmailClient):
@@ -105,8 +86,7 @@ class OrderService:
 
 ## Checklist
 
-- [ ] Unique, descriptive task name (e.g., `"domain.action"`)
-- [ ] Task name matches between `@task` and `@send_task`
+- [ ] Unique task name matching between `@task` and `@send_task` (e.g., `"domain.action"`)
 - [ ] Worker method is `async def`
-- [ ] Celery broker/backend configured
-- [ ] Error handling and retries considered
+- [ ] Client class extends `CeleryClient` and uses `@celery` decorator
+- [ ] Celery broker/backend configured in `CelerySettings`

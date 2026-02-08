@@ -1,26 +1,20 @@
 ---
-name: pico-tests
-description: Generates tests for pico-framework components
+name: add-tests
+description: Generate tests for pico-framework components. Use when creating unit tests, integration tests, or test fixtures for services, repositories, controllers, or agents.
 argument-hint: [component to test]
 ---
 
-# Pico Framework Test Generator
+# Add Tests
 
 Generate tests for: $ARGUMENTS
 
-## Rules
+Read the component source code first, then generate tests following these patterns.
 
-- Use `pytest` with `pytest-asyncio` for async tests
-- Mock dependencies via constructor injection
-- Test the component in isolation, not the container
-- Follow the Arrange-Act-Assert pattern
-- Name tests: `test_<method>_<scenario>`
-
-## Component Test
+## Service Test (unit)
 
 ```python
 import pytest
-from unittest.mock import AsyncMock, MagicMock
+from unittest.mock import AsyncMock
 
 class TestMyService:
     @pytest.fixture
@@ -45,12 +39,12 @@ class TestMyService:
             await service.get_user(999)
 ```
 
-## Repository Test (with real database)
+## Repository Test (integration, in-memory DB)
 
 ```python
 import pytest
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
-from pico_sqlalchemy import SessionManager
+from pico_sqlalchemy import SessionManager, AppBase
 
 @pytest.fixture
 async def session_manager():
@@ -74,7 +68,7 @@ class TestUserRepository:
             assert found.name == "Alice"
 ```
 
-## Controller Test
+## Controller Test (HTTP)
 
 ```python
 import pytest
@@ -83,15 +77,14 @@ from httpx import AsyncClient, ASGITransport
 @pytest.fixture
 async def client(app):
     transport = ASGITransport(app=app)
-    async with AsyncClient(transport=transport, base_url="http://test") as client:
-        yield client
+    async with AsyncClient(transport=transport, base_url="http://test") as c:
+        yield c
 
 class TestItemController:
     @pytest.mark.asyncio
     async def test_list_items(self, client):
         response = await client.get("/items/")
         assert response.status_code == 200
-        assert isinstance(response.json(), list)
 
     @pytest.mark.asyncio
     async def test_create_item(self, client):
@@ -99,28 +92,9 @@ class TestItemController:
         assert response.status_code == 201
 ```
 
-## Validation Test
+## Container Integration Test
 
 ```python
-import pytest
-from pico_pydantic import ValidationFailedError
-
-class TestUserServiceValidation:
-    @pytest.mark.asyncio
-    async def test_create_user_with_valid_data(self, service):
-        result = await service.create_user({"name": "Alice", "email": "a@b.com", "age": 30})
-        assert result.name == "Alice"
-
-    @pytest.mark.asyncio
-    async def test_create_user_rejects_invalid_data(self, service):
-        with pytest.raises(ValidationFailedError):
-            await service.create_user({"name": "", "age": -1})
-```
-
-## Integration Test (with container)
-
-```python
-import pytest
 from pico_ioc import init
 
 class TestIntegration:
@@ -136,8 +110,7 @@ class TestIntegration:
 ## Checklist
 
 - [ ] Unit tests with mocked dependencies
-- [ ] Happy path covered
-- [ ] Error/edge cases covered
+- [ ] Happy path and error cases covered
 - [ ] Async tests use `@pytest.mark.asyncio`
 - [ ] Fixtures for reusable setup
-- [ ] Integration test with real container (optional)
+- [ ] Test naming: `test_<method>_<scenario>`
