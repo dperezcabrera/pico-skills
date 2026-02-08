@@ -3,7 +3,7 @@
 # Usage:
 #   curl -sL https://raw.githubusercontent.com/dperezcabrera/pico-skills/main/install.sh | bash
 #   curl -sL https://raw.githubusercontent.com/dperezcabrera/pico-skills/main/install.sh | bash -s -- sqlalchemy fastapi
-#   curl -sL https://raw.githubusercontent.com/dperezcabrera/pico-skills/main/install.sh | bash -s -- all
+#   curl -sL https://raw.githubusercontent.com/dperezcabrera/pico-skills/main/install.sh | bash -s -- --override
 set -euo pipefail
 
 REPO="dperezcabrera/pico-skills"
@@ -31,13 +31,17 @@ usage() {
 Pico-Skills installer for Claude Code
 
 Usage:
-  install.sh [packages...]
+  install.sh [--override] [packages...]
+
+Options:
+  --override    Overwrite existing skills without asking
 
 Examples:
   install.sh                    # Install all skills
   install.sh all                # Install all skills
   install.sh sqlalchemy fastapi # Install sqlalchemy + fastapi skills (+ base)
   install.sh ioc                # Install only pico-ioc skills
+  install.sh --override         # Install all, overwrite existing
 
 Available packages:
   ioc         add-component (included by default)
@@ -73,7 +77,17 @@ install_skill() {
 }
 
 main() {
-    local packages=("$@")
+    local override=false
+    local packages=()
+
+    # Parse arguments
+    for arg in "$@"; do
+        case "$arg" in
+            --override) override=true ;;
+            --help|-h)  usage; exit 0 ;;
+            *)          packages+=("$arg") ;;
+        esac
+    done
 
     # No args or "all" -> install everything
     if [ ${#packages[@]} -eq 0 ] || [ "${packages[0]}" = "all" ]; then
@@ -82,10 +96,6 @@ main() {
 
     # Validate packages
     for pkg in "${packages[@]}"; do
-        if [ "$pkg" = "--help" ] || [ "$pkg" = "-h" ]; then
-            usage
-            exit 0
-        fi
         if [ -z "${SKILL_MAP[$pkg]+x}" ]; then
             printf "Unknown package: %s\n\n" "$pkg" >&2
             usage >&2
@@ -101,6 +111,35 @@ main() {
     for pkg in "${packages[@]}"; do
         skills_to_install[${SKILL_MAP[$pkg]}]=1
     done
+
+    # Check for existing skills
+    if [ "$override" = false ]; then
+        local existing=()
+        for skill in "${!skills_to_install[@]}"; do
+            if [ -f ".claude/skills/${skill}/SKILL.md" ]; then
+                existing+=("$skill")
+            fi
+        done
+
+        if [ ${#existing[@]} -gt 0 ]; then
+            printf "The following skills already exist and would be overwritten:\n\n"
+            for skill in "${existing[@]}"; do
+                printf "  .claude/skills/%s/SKILL.md\n" "$skill"
+            done
+            printf "\nUse --override to overwrite, or proceed interactively.\n"
+            printf "Overwrite? [y/N] "
+            local answer
+            if read -r answer < /dev/tty 2>/dev/null; then
+                case "$answer" in
+                    y|Y|yes|YES) ;;
+                    *) printf "Aborted.\n"; exit 0 ;;
+                esac
+            else
+                printf "\nCannot read from terminal. Use --override to force.\n" >&2
+                exit 1
+            fi
+        fi
+    fi
 
     local total=${#skills_to_install[@]}
     printf "Installing %d pico-framework skills into .claude/skills/\n\n" "$total"
