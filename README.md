@@ -1,8 +1,8 @@
 # Pico-Skills
 
-[Claude Code](https://code.claude.com) skills for the [pico-framework](https://github.com/dperezcabrera) ecosystem.
+[Claude Code](https://code.claude.com) skills for the [pico-boot](https://github.com/dperezcabrera/pico-boot) ecosystem.
 
-AI-assisted code generation following pico-framework patterns and best practices.
+AI-assisted code generation following pico framework patterns and best practices.
 
 ## Available Skills
 
@@ -17,13 +17,13 @@ AI-assisted code generation following pico-framework patterns and best practices
 | `/add-validation` | pico-pydantic | Add Pydantic validation to component methods |
 | `/add-agent` | pico-agent | Add LLM agents and tools |
 | `/add-app` | pico-boot | Scaffold a new pico-boot application |
-| `/add-tests` | all | Generate tests for any pico-framework component |
+| `/add-tests` | all | Generate tests for any pico component |
 
 ### Auto-loaded by Claude (background knowledge)
 
 | Skill | Description |
 |-------|-------------|
-| `pico-conventions` | API reference and patterns for all pico-* packages. Loaded automatically when Claude detects pico-framework usage. |
+| `pico-conventions` | API reference and patterns for all pico-* packages. Loaded automatically when Claude detects pico framework usage. |
 
 ## Installation
 
@@ -89,7 +89,7 @@ Each skill follows the [Claude Code skills standard](https://code.claude.com/doc
     pico-conventions/SKILL.md    # Background knowledge, auto-loaded by Claude
 ```
 
-## Pico-Framework Packages
+## Pico Ecosystem Packages
 
 | Package | PyPI | Description |
 |---------|------|-------------|
@@ -105,7 +105,7 @@ Each skill follows the [Claude Code skills standard](https://code.claude.com/doc
 
 - [Claude Code](https://code.claude.com) CLI
 - Python >= 3.11
-- Relevant pico-framework packages installed in your project
+- Relevant pico packages installed in your project
 
 ## License
 
