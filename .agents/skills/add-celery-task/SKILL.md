@@ -1,0 +1,1 @@
+../../../.claude/skills/add-celery-task/SKILL.md

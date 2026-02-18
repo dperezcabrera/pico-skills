@@ -2,6 +2,7 @@
 name: add-agent
 description: Add an LLM agent or tool with pico-agent. Use when creating AI agents, chatbots, or LLM-powered tools.
 argument-hint: [agent name]
+allowed-tools: Read Grep Glob Write Edit
 ---
 
 # Add Agent

@@ -1,8 +1,19 @@
 # Pico-Skills
 
-[Claude Code](https://code.claude.com) skills for the [pico-boot](https://github.com/dperezcabrera/pico-boot) ecosystem.
+[Claude Code](https://code.claude.com) and [OpenAI Codex](https://openai.com/index/introducing-codex/) skills for the [pico-boot](https://github.com/dperezcabrera/pico-boot) ecosystem.
 
 AI-assisted code generation following pico framework patterns and best practices.
+
+## Platform Compatibility
+
+Pico-Skills follows the [Agent Skills](https://agent-skills.org) standard and supports multiple AI coding agents:
+
+| Platform | Skills directory | Status |
+|----------|-----------------|--------|
+| [Claude Code](https://code.claude.com) | `.claude/skills/` | Canonical source |
+| [OpenAI Codex](https://openai.com/index/introducing-codex/) | `.agents/skills/` | Symlinks to `.claude/skills/` |
+
+The `.agents/skills/` directory contains symlinks to the canonical `.claude/skills/` files, so both platforms always use the same skill definitions.
 
 ## Available Skills
 
@@ -31,6 +42,18 @@ AI-assisted code generation following pico framework patterns and best practices
 
 ```bash
 curl -sL https://raw.githubusercontent.com/dperezcabrera/pico-skills/main/install.sh | bash
+```
+
+By default, skills are installed for both Claude Code (`.claude/skills/`) and OpenAI Codex (`.agents/skills/`).
+
+### Platform-specific installation
+
+```bash
+# Claude Code only
+curl -sL https://raw.githubusercontent.com/dperezcabrera/pico-skills/main/install.sh | bash -s -- --claude
+
+# OpenAI Codex only
+curl -sL https://raw.githubusercontent.com/dperezcabrera/pico-skills/main/install.sh | bash -s -- --codex
 ```
 
 ### Only the packages you use
@@ -74,19 +97,26 @@ cd ~ && curl -sL https://raw.githubusercontent.com/dperezcabrera/pico-skills/mai
 
 ## Skill Structure
 
-Each skill follows the [Claude Code skills standard](https://code.claude.com/docs/en/skills):
+Each skill follows the [Agent Skills](https://agent-skills.org) standard:
 
 ```
-.claude/skills/
-    add-component/SKILL.md       # User-invocable task
-    add-repository/SKILL.md
-    add-controller/SKILL.md
-    add-celery-task/SKILL.md
-    add-validation/SKILL.md
-    add-agent/SKILL.md
-    add-app/SKILL.md             # User-invocable, model cannot auto-invoke
-    add-tests/SKILL.md
-    pico-conventions/SKILL.md    # Background knowledge, auto-loaded by Claude
+pico-skills/
+├── .claude/skills/                # Canonical source (Claude Code)
+│   ├── add-component/SKILL.md
+│   ├── add-repository/SKILL.md
+│   ├── add-controller/SKILL.md
+│   ├── add-celery-task/SKILL.md
+│   ├── add-validation/SKILL.md
+│   ├── add-agent/SKILL.md
+│   ├── add-app/SKILL.md
+│   ├── add-tests/SKILL.md
+│   └── pico-conventions/SKILL.md
+├── .agents/skills/                # Symlinks for Codex
+│   ├── add-component/SKILL.md → ../../.claude/skills/add-component/SKILL.md
+│   ├── add-repository/SKILL.md → ...
+│   └── ...
+├── install.sh
+└── README.md
 ```
 
 ## Pico Ecosystem Packages
@@ -103,7 +133,7 @@ Each skill follows the [Claude Code skills standard](https://code.claude.com/doc
 
 ## Requirements
 
-- [Claude Code](https://code.claude.com) CLI
+- [Claude Code](https://code.claude.com) CLI or [OpenAI Codex](https://openai.com/index/introducing-codex/)
 - Python >= 3.11
 - Relevant pico packages installed in your project
 

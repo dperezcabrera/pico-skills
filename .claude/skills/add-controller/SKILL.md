@@ -2,6 +2,7 @@
 name: add-controller
 description: Add a FastAPI controller with pico-fastapi. Use when creating REST API endpoints, WebSocket handlers, or HTTP routes.
 argument-hint: [controller name or endpoint path]
+allowed-tools: Read Grep Glob Write Edit
 ---
 
 # Add Controller
