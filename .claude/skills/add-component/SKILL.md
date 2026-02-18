@@ -2,6 +2,7 @@
 name: add-component
 description: Add a new pico-ioc component with dependency injection. Use when creating services, factories, interceptors, event subscribers, or configured settings.
 argument-hint: [component name]
+allowed-tools: Read Grep Glob Write Edit
 ---
 
 # Add Pico-IoC Component

@@ -1,0 +1,1 @@
+../../../.claude/skills/add-validation/SKILL.md

@@ -1,0 +1,1 @@
+../../../.claude/skills/add-repository/SKILL.md

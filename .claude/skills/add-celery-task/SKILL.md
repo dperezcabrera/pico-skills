@@ -2,6 +2,7 @@
 name: add-celery-task
 description: Add a Celery task with pico-celery. Use when creating background tasks, async workers, or task clients.
 argument-hint: [task name]
+allowed-tools: Read Grep Glob Write Edit
 ---
 
 # Add Celery Task

@@ -2,6 +2,7 @@
 name: add-tests
 description: Generate tests for pico-framework components. Use when creating unit tests, integration tests, or test fixtures for services, repositories, controllers, or agents.
 argument-hint: [component to test]
+allowed-tools: Read Grep Glob Write Edit Bash
 ---
 
 # Add Tests

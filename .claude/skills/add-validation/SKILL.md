@@ -2,6 +2,7 @@
 name: add-validation
 description: Add Pydantic validation to component methods with pico-pydantic. Use when adding input validation to services or API handlers.
 argument-hint: [component or method to validate]
+allowed-tools: Read Grep Glob Write Edit
 ---
 
 # Add Validation

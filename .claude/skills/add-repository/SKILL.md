@@ -2,6 +2,7 @@
 name: add-repository
 description: Add a SQLAlchemy entity and repository with pico-sqlalchemy. Use when creating database models, repositories, or adding database queries.
 argument-hint: [entity name]
+allowed-tools: Read Grep Glob Write Edit
 ---
 
 # Add Repository
