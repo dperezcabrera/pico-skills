@@ -128,6 +128,43 @@ from pico_pydantic import (
 )
 ```
 
+## pico-client-auth
+
+```python
+from pico_client_auth import (
+    # Decorators
+    allow_anonymous,            # @allow_anonymous — skip auth for endpoint
+    requires_role,              # @requires_role("admin", "editor") — require roles
+
+    # Context
+    SecurityContext,            # Static accessor: get(), require(), has_role(), require_role()
+    TokenClaims,                # Frozen dataclass: sub, email, role, org_id, jti
+
+    # Extension
+    RoleResolver,               # Protocol for custom role extraction
+    AuthClientSettings,         # @configured settings (prefix="auth_client")
+
+    # Errors
+    AuthClientError,            # Base exception
+    MissingTokenError,          # 401 — no Bearer token
+    TokenExpiredError,          # 401 — expired JWT
+    TokenInvalidError,          # 401 — bad signature, wrong issuer/audience
+    InsufficientPermissionsError,  # 403 — missing required role
+    AuthConfigurationError,     # Startup — missing issuer/audience
+)
+```
+
+Auth is enabled by default on all routes. Use `@allow_anonymous` to opt out.
+
+Custom role resolver (overrides default automatically via `on_missing_selector`):
+
+```python
+@component
+class MyRoleResolver:
+    async def resolve(self, claims: TokenClaims, raw_claims: dict) -> list[str]:
+        return raw_claims.get("roles", [])
+```
+
 ## pico-agent
 
 ```python
