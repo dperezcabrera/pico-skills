@@ -27,9 +27,10 @@ declare -A SKILL_MAP=(
     [celery]="add-celery-task"
     [pydantic]="add-validation"
     [agent]="add-agent"
+    [auth]="add-auth"
 )
 
-ALL_PACKAGES="ioc boot fastapi sqlalchemy celery pydantic agent"
+ALL_PACKAGES="ioc boot fastapi sqlalchemy celery pydantic agent auth"
 
 usage() {
     cat <<'USAGE'
@@ -61,6 +62,7 @@ Available packages:
   celery      add-celery-task
   pydantic    add-validation
   agent       add-agent
+  auth        add-auth
 
 Base skills (always installed):
   pico-conventions, add-component, add-tests

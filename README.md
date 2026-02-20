@@ -27,6 +27,7 @@ The `.agents/skills/` directory contains symlinks to the canonical `.claude/skil
 | `/add-celery-task` | pico-celery | Add Celery worker tasks and client senders |
 | `/add-validation` | pico-pydantic | Add Pydantic validation to component methods |
 | `/add-agent` | pico-agent | Add LLM agents and tools |
+| `/add-auth` | pico-client-auth | Add JWT authentication, role-based access control, custom role resolvers |
 | `/add-app` | pico-boot | Scaffold a new pico-boot application |
 | `/add-tests` | all | Generate tests for any pico component |
 
@@ -75,6 +76,7 @@ Base skills (`pico-conventions`, `add-component`, `add-tests`) are always includ
 | `celery` | `add-celery-task` |
 | `pydantic` | `add-validation` |
 | `agent` | `add-agent` |
+| `auth` | `add-auth` |
 
 ### User-level (all projects)
 
@@ -91,6 +93,7 @@ cd ~ && curl -sL https://raw.githubusercontent.com/dperezcabrera/pico-skills/mai
 /add-celery-task send_notification
 /add-validation UserService
 /add-agent support_bot
+/add-auth DatabaseRoleResolver
 /add-app my-app
 /add-tests UserService
 ```
@@ -108,11 +111,13 @@ pico-skills/
 │   ├── add-celery-task/SKILL.md
 │   ├── add-validation/SKILL.md
 │   ├── add-agent/SKILL.md
+│   ├── add-auth/SKILL.md
 │   ├── add-app/SKILL.md
 │   ├── add-tests/SKILL.md
 │   └── pico-conventions/SKILL.md
 ├── .agents/skills/                # Symlinks for Codex
 │   ├── add-component/SKILL.md → ../../.claude/skills/add-component/SKILL.md
+│   ├── add-auth/SKILL.md → ../../.claude/skills/add-auth/SKILL.md
 │   ├── add-repository/SKILL.md → ...
 │   └── ...
 ├── install.sh
@@ -129,6 +134,7 @@ pico-skills/
 | [pico-sqlalchemy](https://github.com/dperezcabrera/pico-sqlalchemy) | [![PyPI](https://img.shields.io/pypi/v/pico-sqlalchemy)](https://pypi.org/project/pico-sqlalchemy/) | SQLAlchemy + transactions |
 | [pico-celery](https://github.com/dperezcabrera/pico-celery) | [![PyPI](https://img.shields.io/pypi/v/pico-celery)](https://pypi.org/project/pico-celery/) | Celery task integration |
 | [pico-pydantic](https://github.com/dperezcabrera/pico-pydantic) | [![PyPI](https://img.shields.io/pypi/v/pico-pydantic)](https://pypi.org/project/pico-pydantic/) | Pydantic validation AOP |
+| [pico-client-auth](https://github.com/dperezcabrera/pico-client-auth) | [![PyPI](https://img.shields.io/pypi/v/pico-client-auth)](https://pypi.org/project/pico-client-auth/) | JWT authentication client |
 | [pico-agent](https://github.com/dperezcabrera/pico-agent) | [![PyPI](https://img.shields.io/pypi/v/pico-agent)](https://pypi.org/project/pico-agent/) | LLM agent framework |
 
 ## Requirements
