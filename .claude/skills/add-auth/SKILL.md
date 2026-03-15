@@ -69,6 +69,23 @@ class AdminController:
         return await self.service.ban(user_id)
 ```
 
+## Group-Protected Endpoint
+
+```python
+from pico_fastapi import controller, get
+from pico_client_auth import requires_group, SecurityContext
+
+@controller(prefix="/api/projects", tags=["projects"])
+class ProjectController:
+    def __init__(self, service: ProjectService):
+        self.service = service
+
+    @get("/{project_id}")
+    @requires_group("project-alpha", "project-beta")
+    async def get_project(self, project_id: str):
+        return await self.service.get(project_id)
+```
+
 ## Access Claims in Services
 
 `SecurityContext` works anywhere within a request — controllers, services, repositories:
@@ -85,6 +102,12 @@ class AuditService:
 
     async def get_current_org(self) -> str:
         return SecurityContext.require().org_id
+
+    async def check_group_access(self, group_id: str) -> bool:
+        return SecurityContext.has_group(group_id)
+
+    async def get_user_groups(self) -> tuple[str, ...]:
+        return SecurityContext.get_groups()
 ```
 
 ## Custom Role Resolver (Roles Array)
@@ -145,11 +168,61 @@ auth_client:
   enabled: false
 ```
 
+## Post-Quantum (ML-DSA) Authentication
+
+Enable ML-DSA-65 / ML-DSA-87 post-quantum JWT verification:
+
+```bash
+pip install pico-client-auth[pqc]
+```
+
+```yaml
+# application.yaml
+auth_client:
+  issuer: https://auth.example.com
+  audience: my-api
+  accepted_algorithms:
+    - RS256
+    - ML-DSA-65
+```
+
+ML-DSA tokens use the `AKP` JWK key type with base64url-encoded raw public keys (per draft-ietf-cose-dilithium). The `TokenValidator` automatically dispatches ML-DSA tokens to `pqc_jwt` (liboqs) and RS256 tokens to python-jose.
+
+JWKS response with ML-DSA key:
+
+```json
+{
+  "keys": [
+    {"kty": "AKP", "kid": "pqc-key-1", "alg": "ML-DSA-65", "pub": "<base64url>"}
+  ]
+}
+```
+
+Supported algorithms: `ML-DSA-65` (NIST Level 3), `ML-DSA-87` (NIST Level 5).
+
+When `liboqs-python` is not installed, ML-DSA tokens are rejected with `AuthConfigurationError`. RS256 continues to work without liboqs.
+
+### Testing PQC
+
+PQC tests skip gracefully without liboqs via `pytest.importorskip("oqs")`:
+
+```python
+def test_pqc_token(mldsa65_keypair, make_pqc_token):
+    oqs = pytest.importorskip("oqs")
+    public_key, secret_key = mldsa65_keypair
+    token = make_pqc_token(secret_key, algorithm="ML-DSA-65")
+    # ... test with token
+```
+
+Run PQC tests in Docker: `make pqc-test`
+
 ## Checklist
 
 - [ ] `auth_client.issuer` and `auth_client.audience` configured
 - [ ] Public endpoints marked with `@allow_anonymous`
 - [ ] Admin endpoints protected with `@requires_role`
+- [ ] Group-restricted endpoints protected with `@requires_group`
 - [ ] `SecurityContext.require()` used in services (not just controllers)
 - [ ] Custom `RoleResolver` registered if token structure differs from default
 - [ ] Tests use RSA keypair fixture and `make_token` factory
+- [ ] If PQC: `accepted_algorithms` includes ML-DSA variant, `pqc` extra installed

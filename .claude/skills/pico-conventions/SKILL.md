@@ -134,11 +134,12 @@ from pico_pydantic import (
 from pico_client_auth import (
     # Decorators
     allow_anonymous,            # @allow_anonymous — skip auth for endpoint
-    requires_role,              # @requires_role("admin", "editor") — require roles
+    requires_role,              # @requires_role("admin", "editor") — require any of these roles
+    requires_group,             # @requires_group("group-id") — require group membership
 
     # Context
-    SecurityContext,            # Static accessor: get(), require(), has_role(), require_role()
-    TokenClaims,                # Frozen dataclass: sub, email, role, org_id, jti
+    SecurityContext,            # Static accessor for current request's auth state
+    TokenClaims,                # Frozen dataclass: sub, email, role, org_id, jti, groups
 
     # Extension
     RoleResolver,               # Protocol for custom role extraction
@@ -149,12 +150,42 @@ from pico_client_auth import (
     MissingTokenError,          # 401 — no Bearer token
     TokenExpiredError,          # 401 — expired JWT
     TokenInvalidError,          # 401 — bad signature, wrong issuer/audience
-    InsufficientPermissionsError,  # 403 — missing required role
+    InsufficientPermissionsError,  # 403 — missing required role/group
     AuthConfigurationError,     # Startup — missing issuer/audience
 )
 ```
 
 Auth is enabled by default on all routes. Use `@allow_anonymous` to opt out.
+
+`SecurityContext` static methods:
+
+| Method | Returns | Description |
+|--------|---------|-------------|
+| `get()` | `TokenClaims \| None` | Current claims, or None if unauthenticated |
+| `require()` | `TokenClaims` | Current claims, raises `MissingTokenError` if absent |
+| `get_roles()` | `list[str]` | Resolved roles for current request |
+| `has_role(role)` | `bool` | Check if user has a role |
+| `require_role(*roles)` | `None` | Assert at least one role, raises 403 |
+| `get_groups()` | `tuple[str, ...]` | Group IDs from token |
+| `has_group(group_id)` | `bool` | Check group membership |
+| `require_group(*group_ids)` | `None` | Assert at least one group, raises 403 |
+
+`AuthClientSettings` fields:
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `enabled` | `bool` | `True` | Enable/disable auth middleware |
+| `issuer` | `str` | `""` | Expected JWT issuer |
+| `audience` | `str` | `""` | Expected JWT audience |
+| `jwks_ttl_seconds` | `int` | `300` | JWKS cache TTL |
+| `jwks_endpoint` | `str` | `""` | Custom JWKS URL (defaults to `{issuer}/api/v1/auth/jwks`) |
+| `accepted_algorithms` | `tuple[str, ...]` | `("RS256",)` | Accepted JWT algorithms (`RS256`, `ML-DSA-65`, `ML-DSA-87`) |
+
+Post-quantum ML-DSA support (optional `pqc` extra, requires `liboqs-python`):
+- `ML-DSA-65` (NIST Level 3) and `ML-DSA-87` (NIST Level 5)
+- Add to `accepted_algorithms` to enable; RS256 tokens continue to work alongside
+- JWK key type: `AKP` with `pub` field (base64url raw public key bytes)
+- Install: `pip install pico-client-auth[pqc]`
 
 Custom role resolver (overrides default automatically via `on_missing_selector`):
 
