@@ -1,12 +1,16 @@
 ---
 name: add-app
-description: Scaffold a new pico-framework application with pico-boot. Use when starting a new project or setting up the application skeleton.
+description: Scaffold a new pico-framework application with pico-boot. Use when starting a new project or setting up the application skeleton. For multi-module projects, prefer /init-project which uses pico-initializer.
 argument-hint: [project name]
 disable-model-invocation: true
 allowed-tools: Read Grep Glob Write Edit Bash
 ---
 
 # Scaffold Pico Application
+
+> **Tip:** For projects with multiple modules (fastapi, sqlalchemy, celery, etc.),
+> use `/init-project` instead — it generates the full scaffold with all integrations
+> wired correctly via [pico-initializer](https://github.com/dperezcabrera/pico-initializer).
 
 Create a new application: $ARGUMENTS
 

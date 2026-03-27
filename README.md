@@ -29,6 +29,7 @@ The `.agents/skills/` directory contains symlinks to the canonical `.claude/skil
 | `/add-agent` | pico-agent | Add LLM agents and tools |
 | `/add-auth` | pico-client-auth | Add JWT authentication, role-based access control, custom role resolvers |
 | `/add-app` | pico-boot | Scaffold a new pico-boot application |
+| `/init-project` | [pico-initializer](https://github.com/dperezcabrera/pico-initializer) | Generate a full project with selected modules via pico-initializer CLI |
 | `/add-tests` | all | Generate tests for any pico component |
 
 ### Auto-loaded by Claude (background knowledge)
