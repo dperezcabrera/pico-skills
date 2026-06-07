@@ -63,8 +63,12 @@ from pico_ioc import (
 |-------|----------|
 | `singleton` | One instance per container (default for services) |
 | `prototype` | New instance on every resolution |
-| `request` | One instance per request context |
-| `transaction` | One instance per transaction context |
+| `request` | One instance per request context (activated by pico-fastapi middleware) |
+| `session` | One instance per session context |
+| `websocket` | One instance per websocket connection |
+| `transaction` | One instance per DB transaction — Unit-of-Work / identity-map. With **pico-sqlalchemy**, `TransactionalInterceptor` activates it on each new transaction (`REQUIRES_NEW`, or `REQUIRED` with no enclosing tx) and releases it (running `@cleanup`) on commit/rollback. Resolving one outside a transaction raises `ScopeError` |
+
+Short-lived scopes: use `with container.scope("request", id, cleanup=True):` so per-scope instances are evicted (and their `@cleanup` hooks run) on exit.
 
 ## pico-boot
 

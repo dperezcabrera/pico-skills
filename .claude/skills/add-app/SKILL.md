@@ -1,6 +1,6 @@
 ---
 name: add-app
-description: Scaffold a new pico-framework application with pico-boot. Use when starting a new project or setting up the application skeleton. For multi-module projects, prefer /init-project which uses pico-initializer.
+description: Scaffold a new pico-boot application. Use when starting a new project or setting up the application skeleton. For multi-module projects, prefer /init-project which uses pico-initializer.
 argument-hint: [project name]
 disable-model-invocation: true
 allowed-tools: Read Grep Glob Write Edit Bash

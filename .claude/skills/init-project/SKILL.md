@@ -1,6 +1,6 @@
 ---
 name: init-project
-description: Generate a complete pico-framework project using pico-initializer. Use when bootstrapping a new project with specific modules (fastapi, sqlalchemy, celery, pydantic, agent, auth).
+description: Generate a complete pico-boot project using pico-initializer. Use when bootstrapping a new project with specific modules (fastapi, sqlalchemy, celery, pydantic, agent, auth).
 argument-hint: [project name] [modules...]
 allowed-tools: Read Grep Glob Write Edit Bash
 ---
@@ -20,11 +20,8 @@ Also available as a web app: https://dperezcabrera.github.io/pico-initializer/
 
 2. **Locate pico-initializer** — find the CLI:
    ```bash
-   INITIALIZER=$(find ~/pico-proyects/pico-framework/pico-initializer -name cli.js 2>/dev/null | head -1)
-   if [ -z "$INITIALIZER" ]; then
-     git clone https://github.com/dperezcabrera/pico-initializer.git /tmp/pico-initializer
-     INITIALIZER=/tmp/pico-initializer/cli.js
-   fi
+   git clone https://github.com/dperezcabrera/pico-initializer.git /tmp/pico-initializer
+   INITIALIZER=/tmp/pico-initializer/cli.js
    ```
 
 3. **Build config JSON** from the parsed arguments:

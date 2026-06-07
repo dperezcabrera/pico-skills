@@ -28,6 +28,7 @@ The `.agents/skills/` directory contains symlinks to the canonical `.claude/skil
 | `/add-validation` | pico-pydantic | Add Pydantic validation to component methods |
 | `/add-agent` | pico-agent | Add LLM agents and tools |
 | `/add-auth` | pico-client-auth | Add JWT authentication, role-based access control, custom role resolvers |
+| `/add-server-auth` | pico-server-auth | Add embedded auth server with JWT issuance, wallet login, JWKS |
 | `/add-app` | pico-boot | Scaffold a new pico-boot application |
 | `/init-project` | [pico-initializer](https://github.com/dperezcabrera/pico-initializer) | Generate a full project with selected modules via pico-initializer CLI |
 | `/add-tests` | all | Generate tests for any pico component |

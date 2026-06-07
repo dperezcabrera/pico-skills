@@ -1,0 +1,1 @@
+../../../.claude/skills/add-server-auth/SKILL.md

@@ -97,6 +97,12 @@ class ${ARGUMENTS}Service:
 | `NOT_SUPPORTED` | Suspend transaction, run without |
 | `NEVER` | Error if transaction is active |
 
+> Note: `REQUIRES_NEW` only opens a new transaction when the method is called on **another injected component** — AOP interception does not apply to `self.method()` (self-invocation), exactly like Spring.
+
+## Transaction-scoped components (Unit-of-Work)
+
+A `@component(scope="transaction")` lives exactly one transaction: one shared instance across the whole call tree of a transaction, released (running its `@cleanup` hooks) on commit/rollback. Useful for a per-transaction identity-map, a domain-event collector flushed on commit, or per-transaction caches. `REQUIRES_NEW` gets its own instance; resolving one outside any transaction raises `ScopeError`.
+
 ## Checklist
 
 - [ ] Entity with correct column types and constraints
