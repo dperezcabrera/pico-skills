@@ -144,6 +144,13 @@ If `gh release create` fails with 401/403:
   - Update `pyproject.toml` dependency to `>=NEW_VERSION`
   - Commit: `chore: bump PACKAGE>=NEW_VERSION`
   - Push
+- [ ] Update pico-initializer (single source of truth for generated projects):
+  - Bump the constraint for this package in `pico-initializer/js/versions.js`
+    (`~=NEW_VERSION` for 0.x packages; keep the `<NEXT_MAJOR` cap for 1.x+)
+  - Mirror the same constraint in `pico-initializer/test/Dockerfile` and
+    `pico-initializer/test/Dockerfile.integration` (pre-installed deps)
+  - Commit: `chore: bump PACKAGE to NEW_VERSION in generated projects`
+  - Push (CI runs the integration suite against the new release before deploying)
 
 ## Rollback (if needed)
 
