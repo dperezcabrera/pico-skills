@@ -53,7 +53,7 @@ Supports ML-DSA-65 (Dilithia), Ed25519 (Solana), secp256k1 (Ethereum) wallet sig
      from fastapi import FastAPI
 
      container = init(
-         modules=["pico_server_auth"],
+         modules=[],  # pico_server_auth is auto-discovered by pico-boot
          config=configuration(YamlTreeSource("application.yaml")),
      )
      app = container.get(FastAPI)
