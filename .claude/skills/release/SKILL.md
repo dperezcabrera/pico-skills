@@ -39,7 +39,8 @@ git tag --sort=-v:refname | head -10
   command -v ruff || .venv/bin/ruff --version
   command -v mkdocs || .venv/bin/mkdocs --version
   ```
-- [ ] Check `.gitignore` does NOT block `releases/` — if it does, remove the entry now
+- [ ] Check `.gitignore` DOES block `releases/` — release notes are local-only;
+  their content is used as the GitHub release body, never committed
 
 ## 1. Pre-flight
 
@@ -57,7 +58,7 @@ git tag --sort=-v:refname | head -10
   - Create symlink: `ln -sf ../CHANGELOG.md docs/CHANGELOG.md`
   - Add nav entry to `mkdocs.yml`: `- Changelog: CHANGELOG.md`
 - [ ] Add new version section at the top (Keep a Changelog format)
-- [ ] Format: `## vX.Y.Z — Tagline (YYYY-MM-DD)`
+- [ ] Format: `## [X.Y.Z] - YYYY-MM-DD`
 - [ ] List changes under `### Added`, `### Changed`, `### Fixed`, `### Removed` as applicable
 
 ## 3. Release Notes
@@ -111,7 +112,7 @@ git tag --sort=-v:refname | head -10
 ## 9. Tag
 
 ```bash
-git tag -a vX.Y.Z -m "Release vX.Y.Z - tagline"
+git tag vX.Y.Z
 ```
 
 ## 10. Push
@@ -137,6 +138,9 @@ If `gh release create` fails with 401/403:
 
 - [ ] `gh run list --limit 5` — wait for CI, docs, publish workflows to pass
 - [ ] `gh release view vX.Y.Z` — release exists with correct notes
+- [ ] Wait for the `publish-to-pypi` workflow to succeed, then verify the
+  artifact: `pip download <package>==X.Y.Z --no-deps -d /tmp/relcheck` — the
+  wheel filename must carry the exact clean version (no `.postN`, no `.devN`)
 
 ## 13. Post-release Downstream Updates
 
