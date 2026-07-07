@@ -4,6 +4,8 @@
 
 AI-assisted code generation following pico framework patterns and best practices.
 
+This repo is one third of the ecosystem's [**built-for-the-AI-era**](https://dperezcabrera.github.io/pico-ioc/ai-ready/) story: the conventions live in each module's `AGENTS.md`/`CLAUDE.md`, [pico-initializer](https://dperezcabrera.github.io/pico-initializer/) scaffolds projects that carry them, and these skills teach your coding assistant the whole API surface — so it generates code that fits the framework instead of fighting it.
+
 ## Platform Compatibility
 
 Pico-Skills follows the [Agent Skills](https://agent-skills.org) standard and supports multiple AI coding agents:
@@ -29,6 +31,7 @@ The `.agents/skills/` directory contains symlinks to the canonical `.claude/skil
 | `/add-agent` | pico-agent | Add LLM agents and tools |
 | `/add-auth` | pico-client-auth | Add JWT authentication, role-based access control, custom role resolvers |
 | `/add-server-auth` | pico-server-auth | Add embedded auth server with JWT issuance, wallet login, JWKS |
+| `/add-actuator` | pico-actuator | Add health/info/metrics endpoints and HealthIndicator components |
 | `/add-app` | pico-boot | Scaffold a new pico-boot application |
 | `/init-project` | [pico-initializer](https://github.com/dperezcabrera/pico-initializer) | Generate a full project with selected modules via pico-initializer CLI |
 | `/add-tests` | all | Generate tests for any pico component |
@@ -79,6 +82,8 @@ Base skills (`pico-conventions`, `add-component`, `add-tests`) are always includ
 | `pydantic` | `add-validation` |
 | `agent` | `add-agent` |
 | `auth` | `add-auth` |
+| `server-auth` | `add-server-auth` |
+| `actuator` | `add-actuator` |
 
 ### User-level (all projects)
 
@@ -138,6 +143,8 @@ pico-skills/
 | [pico-pydantic](https://github.com/dperezcabrera/pico-pydantic) | [![PyPI](https://img.shields.io/pypi/v/pico-pydantic)](https://pypi.org/project/pico-pydantic/) | Pydantic validation AOP |
 | [pico-client-auth](https://github.com/dperezcabrera/pico-client-auth) | [![PyPI](https://img.shields.io/pypi/v/pico-client-auth)](https://pypi.org/project/pico-client-auth/) | JWT authentication client |
 | [pico-agent](https://github.com/dperezcabrera/pico-agent) | [![PyPI](https://img.shields.io/pypi/v/pico-agent)](https://pypi.org/project/pico-agent/) | LLM agent framework |
+| [pico-server-auth](https://github.com/dperezcabrera/pico-server-auth) | [![PyPI](https://img.shields.io/pypi/v/pico-server-auth)](https://pypi.org/project/pico-server-auth/) | Embeddable auth server (JWT, wallet, JWKS) |
+| [pico-actuator](https://github.com/dperezcabrera/pico-actuator) | [![PyPI](https://img.shields.io/pypi/v/pico-actuator)](https://pypi.org/project/pico-actuator/) | Health, info and metrics endpoints |
 
 ## Requirements
 

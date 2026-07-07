@@ -211,3 +211,37 @@ from pico_agent import (
     AgentCapability,    # FAST, SMART, REASONING, VISION, CODING
 )
 ```
+
+## pico-server-auth
+
+Embeddable auth server, auto-discovered by pico-boot. Exposes
+`POST /auth/challenge`, `POST /auth/wallet` (wallet login: ML-DSA-65, Ed25519,
+secp256k1), `POST /auth/login` (password), `GET /auth/jwks`. Configure under
+the `server_auth:` prefix (`issuer`, `audience`, `auto_create_admin`,
+`challenge_ttl_seconds`, `supported_wallet_algorithms`). Pair with
+pico-client-auth: `auth_client.issuer` must match `server_auth.issuer`.
+
+## pico-actuator
+
+Spring Boot-style actuator, auto-discovered by pico-boot — zero config needed.
+Endpoints: `/actuator/health`, `/health/live`, `/health/ready`, `/info`,
+`/metrics` (extra `pico-actuator[metrics]`).
+
+```python
+from pico_ioc import component
+from pico_actuator import HealthIndicator, InfoContributor  # protocols
+
+@component
+class DbHealth:  # satisfies HealthIndicator — no registration needed
+    name = "db"
+
+    def check(self):  # sync or async; return dict or truthy
+        return {"status": "UP"}
+```
+
+Settings under the `actuator:` prefix: `enabled`, `show_components`,
+`check_timeout_seconds` (per-indicator budget, default 5s), `info` (static map).
+Indicators run concurrently; a raising/hanging indicator reports `DOWN` in
+isolation (endpoint answers `503`, never 500s). Liveness is dependency-free by
+design — wire `/health/live` to `livenessProbe` and `/health/ready` to
+`readinessProbe`.

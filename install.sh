@@ -28,9 +28,11 @@ declare -A SKILL_MAP=(
     [pydantic]="add-validation"
     [agent]="add-agent"
     [auth]="add-auth"
+    [server-auth]="add-server-auth"
+    [actuator]="add-actuator"
 )
 
-ALL_PACKAGES="ioc boot fastapi sqlalchemy celery pydantic agent auth"
+ALL_PACKAGES="ioc boot fastapi sqlalchemy celery pydantic agent auth server-auth actuator"
 
 usage() {
     cat <<'USAGE'
@@ -63,6 +65,8 @@ Available packages:
   pydantic    add-validation
   agent       add-agent
   auth        add-auth
+  server-auth add-server-auth
+  actuator    add-actuator
 
 Base skills (always installed):
   pico-conventions, add-component, add-tests
