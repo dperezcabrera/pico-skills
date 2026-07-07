@@ -50,6 +50,7 @@ from pico_ioc import (
     EventBus,           # Event bus
     Event,              # Base event class
     subscribe,          # @subscribe(EventType) on handler methods
+    ConfigChanged,      # Event published by container.refresh_config() (pico-ioc >= 2.3.0)
 
     # Scopes
     ScopeManager,       # Manage custom scopes
