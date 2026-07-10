@@ -145,6 +145,15 @@ pico-skills/
 | [pico-agent](https://github.com/dperezcabrera/pico-agent) | [![PyPI](https://img.shields.io/pypi/v/pico-agent)](https://pypi.org/project/pico-agent/) | LLM agent framework |
 | [pico-server-auth](https://github.com/dperezcabrera/pico-server-auth) | [![PyPI](https://img.shields.io/pypi/v/pico-server-auth)](https://pypi.org/project/pico-server-auth/) | Embeddable auth server (JWT, wallet, JWKS) |
 | [pico-actuator](https://github.com/dperezcabrera/pico-actuator) | [![PyPI](https://img.shields.io/pypi/v/pico-actuator)](https://pypi.org/project/pico-actuator/) | Health, info and metrics endpoints |
+| [pico-resilience](https://github.com/dperezcabrera/pico-resilience) | [![PyPI](https://img.shields.io/pypi/v/pico-resilience)](https://pypi.org/project/pico-resilience/) | Retry, circuit breaker and timeout AOP |
+| [pico-caching](https://github.com/dperezcabrera/pico-caching) | [![PyPI](https://img.shields.io/pypi/v/pico-caching)](https://pypi.org/project/pico-caching/) | Method result caching |
+| [pico-otel](https://github.com/dperezcabrera/pico-otel) | [![PyPI](https://img.shields.io/pypi/v/pico-otel)](https://pypi.org/project/pico-otel/) | OpenTelemetry tracing and metrics |
+| [pico-scheduling](https://github.com/dperezcabrera/pico-scheduling) | [![PyPI](https://img.shields.io/pypi/v/pico-scheduling)](https://pypi.org/project/pico-scheduling/) | Interval and cron scheduled methods |
+| [pico-httpx](https://github.com/dperezcabrera/pico-httpx) | [![PyPI](https://img.shields.io/pypi/v/pico-httpx)](https://pypi.org/project/pico-httpx/) | Declarative HTTP clients |
+| [pico-data-redis](https://github.com/dperezcabrera/pico-data-redis) | [![PyPI](https://img.shields.io/pypi/v/pico-data-redis)](https://pypi.org/project/pico-data-redis/) | Redis client and distributed cache backend |
+| [pico-rabbitmq](https://github.com/dperezcabrera/pico-rabbitmq) | [![PyPI](https://img.shields.io/pypi/v/pico-rabbitmq)](https://pypi.org/project/pico-rabbitmq/) | RabbitMQ pub-sub |
+| [pico-kafka](https://github.com/dperezcabrera/pico-kafka) | [![PyPI](https://img.shields.io/pypi/v/pico-kafka)](https://pypi.org/project/pico-kafka/) | Kafka producers and consumers |
+| [pico-testing](https://github.com/dperezcabrera/pico-testing) | [![PyPI](https://img.shields.io/pypi/v/pico-testing)](https://pypi.org/project/pico-testing/) | Pytest plugin: isolated containers and fixtures |
 
 ## Requirements
 

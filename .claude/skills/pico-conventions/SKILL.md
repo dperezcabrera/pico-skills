@@ -245,3 +245,112 @@ Indicators run concurrently; a raising/hanging indicator reports `DOWN` in
 isolation (endpoint answers `503`, never 500s). Liveness is dependency-free by
 design — wire `/health/live` to `livenessProbe` and `/health/ready` to
 `readinessProbe`.
+
+## pico-scheduling
+
+`@scheduled` methods on components, auto-discovered by pico-boot. Exactly one
+of `every=` (seconds) or `cron=` (5-field crontab). Sync or async. Jobs start
+with the container and stop with it; a raising job logs and keeps its schedule.
+
+```python
+from pico_ioc import component
+from pico_scheduling import scheduled
+
+@component
+class Reports:
+    @scheduled(every=300)
+    def refresh_cache(self): ...
+
+    @scheduled(cron="0 3 * * *")
+    async def nightly_rollup(self): ...
+```
+
+Settings under `scheduling:`: `enabled` (kill-switch for tests/scripts).
+
+## pico-httpx
+
+Declarative HTTP clients: the class is the interface, the implementation is
+generated. Path `{placeholders}` bind to parameters, `json` is the body,
+other params become query params (`None` dropped). Return annotation
+`httpx.Response` = raw; anything else = `response.json()`. Non-2xx raises
+`httpx.HTTPStatusError` — stack `@retryable` on top for retries.
+
+```python
+from pico_httpx import http_client, get, post
+
+@http_client(name="users")  # base_url from http.clients.users.base_url
+class UsersApi:
+    @get("/users/{user_id}")
+    def get_user(self, user_id: int) -> dict: ...
+
+    @post("/users")
+    async def create_user(self, json: dict) -> dict: ...
+```
+
+Settings under `http:`: `timeout_seconds`, `clients.<name>.base_url`.
+Clients close on container shutdown.
+
+## pico-data-redis
+
+Redis integration: injectable `redis.Redis` singleton plus a distributed
+`CacheBackend` for pico-caching. Installing it is opting in — `@cacheable`
+switches to Redis automatically (interceptor prefers non-in-memory backends).
+Fail-open: Redis down degrades to cache misses, never errors. Values are
+pickled — the Redis instance must be trusted.
+
+Settings under `redis:`: `url`, `socket_timeout_seconds`, `cache_prefix`.
+
+## pico-rabbitmq
+
+RabbitMQ pub-sub (aio-pika) — events, fan-out and topic routing (pico-celery
+stays for tasks). Runs on a dedicated background loop: no lifespan wiring.
+Ack on success; on exception the message is logged and rejected WITHOUT
+requeue (use a dead-letter exchange to keep failures).
+
+```python
+from pico_rabbitmq import consumer, publisher, publish
+
+@component
+class Projections:
+    @consumer("orders-projection", exchange="events", routing_key="orders.*")
+    async def on_order(self, message: dict): ...
+
+@publisher
+class Events:
+    @publish(exchange="events", routing_key="orders.created")
+    def order_created(self, message): ...
+```
+
+Settings under `rabbitmq:`: `url`, `enabled`, `prefetch_count`,
+`publish_timeout_seconds`.
+
+## pico-kafka
+
+Kafka (aiokafka), same shape as pico-rabbitmq. A raising handler logs and
+SKIPS its record (offsets advance — poison records never stall a partition).
+Different `group_id`s on the same topic fan the stream out.
+
+```python
+from pico_kafka import kafka_consumer, kafka_producer, produce
+
+@component
+class Projection:
+    @kafka_consumer("orders")
+    async def on_order(self, message: dict): ...
+
+@kafka_producer
+class Events:
+    @produce("orders")
+    def order_created(self, message): ...
+```
+
+Settings under `kafka:`: `bootstrap_servers`, `enabled`, `group_id`,
+`produce_timeout_seconds`.
+
+## pico-testing
+
+Pytest plugin, active on install. Sets `PICO_BOOT_AUTO_PLUGINS=false` for
+every test (suite results never depend on what else is installed in the
+venv); opt back in per-test with `@pytest.mark.pico_auto_plugins`. Provides
+`make_container(*modules, config=dict|configuration, boot=False)` with
+automatic shutdown on teardown — replaces the hand-written conftest fixtures.
