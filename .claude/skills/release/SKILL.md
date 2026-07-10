@@ -45,6 +45,9 @@ git tag --sort=-v:refname | head -10
 ## 1. Pre-flight
 
 - [ ] `cd <package-dir>`
+- [ ] **Flagship validation** if the release touches ecosystem contracts:
+      `flagship-validation/validate.py` (hermetic); add `run-level2.sh`
+      (real infra) if it touches DB/broker/cache/actuator behavior
 - [ ] `.venv/bin/python -m pytest tests/ -v` — all tests pass
 - [ ] `.venv/bin/coverage run -m pytest tests/ && .venv/bin/coverage report` — coverage >= 95%
 - [ ] `ruff check src/ tests/` (or `ruff check <pkg>/ tests/`) — clean
@@ -71,6 +74,12 @@ git tag --sort=-v:refname | head -10
 
 ## 4. Dependency Chain Check
 
+- [ ] **PIN FLOOR vs IMPORTS (hard gate)**: every `from pico_x import SYMBOL`
+      in `src/` must exist in the MINIMUM version declared in pyproject.
+      Check against the floor tag, not against your venv:
+      `git -C ../pico-x show v<FLOOR>:src/pico_x/__init__.py | grep <SYMBOL>`.
+      (pico-resilience 0.2.0 shipped importing `ConfigChanged` — new in ioc
+      2.3.0 — while declaring `>= 2.2.0`; hotfix 0.2.1 the same day.)
 - [ ] If this package is a **dependency** of other pico-* packages:
   - Identify which downstream `pyproject.toml` files reference this package
   - Note they will need `>=NEW_VERSION` after this release
@@ -83,6 +92,11 @@ git tag --sort=-v:refname | head -10
 - [ ] Update relevant docs files for new features
 - [ ] Ensure nav entries exist in `mkdocs.yml` for any new pages
 - [ ] Run `mkdocs build --strict` — no warnings or errors
+- [ ] `fleet-scripts/docs-qa.py <repo>` — zero findings (snippets compile,
+      imported symbols exist, no emojis)
+- [ ] New features are VISIBLE: README section + `pico-conventions` skill
+      section updated (a released feature nobody can read about does not
+      exist). llms.txt/llms-full.txt regenerate on deploy — nothing manual
 
 ## 6. README.md
 
@@ -143,6 +157,12 @@ If `gh release create` fails with 401/403:
   wheel filename must carry the exact clean version (no `.postN`, no `.devN`)
 
 ## 13. Post-release Downstream Updates
+
+- [ ] Bump the pin in `pico-initializer/js/versions.js`
+- [ ] New module? Register: conventions skill section, pico-skills README
+      table, initializer (tool/registry/index.html), AGENTS.md catalog in
+      pico-ioc, GitHub topics (`pico-framework` + funcionales + `llms-txt`)
+
 
 - [ ] For each downstream pico-* package that depends on this one:
   - Update `pyproject.toml` dependency to `>=NEW_VERSION`
