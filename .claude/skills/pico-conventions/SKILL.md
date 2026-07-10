@@ -239,6 +239,10 @@ class DbHealth:  # satisfies HealthIndicator — no registration needed
         return {"status": "UP"}
 ```
 
+`POST /actuator/refresh` re-reads tree config sources and publishes
+`ConfigChanged` (Spring Cloud style); subscribed components re-read their
+config — pico-resilience toggles its policies live through it.
+
 Settings under the `actuator:` prefix: `enabled`, `show_components`,
 `check_timeout_seconds` (per-indicator budget, default 5s), `info` (static map).
 Indicators run concurrently; a raising/hanging indicator reports `DOWN` in
@@ -266,6 +270,12 @@ class Reports:
 ```
 
 Settings under `scheduling:`: `enabled` (kill-switch for tests/scripts).
+
+Note on pico-resilience (>= 0.2.0): `resilience.enabled` hot-reloads via
+`ConfigChanged`; requires an EventBus (`pico_ioc.event_bus`) or startup
+fails fast — opt out with `resilience.hot_reload: false`. pico-ioc >= 2.3.0.
+pico-sqlalchemy (>= 0.5.0): `database.migrations_path` runs Alembic
+`upgrade head` on startup (extra `[migrations]`).
 
 ## pico-httpx
 
