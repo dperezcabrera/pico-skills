@@ -45,9 +45,9 @@ git tag --sort=-v:refname | head -10
 ## 1. Pre-flight
 
 - [ ] `cd <package-dir>`
-- [ ] **Flagship validation** if the release touches ecosystem contracts:
-      `flagship-validation/validate.py` (hermetic); add `run-level2.sh`
-      (real infra) if it touches DB/broker/cache/actuator behavior
+- [ ] **`flagship-validation/preflight.sh`** — MANDATORY gate (docs-qa a
+      cero + flagship hermetico). Add `--level2` (real infra + celery worker
+      + JWT over uvicorn) if the release touches DB/broker/cache/auth/actuator
 - [ ] `.venv/bin/python -m pytest tests/ -v` — all tests pass
 - [ ] `.venv/bin/coverage run -m pytest tests/ && .venv/bin/coverage report` — coverage >= 95%
 - [ ] `ruff check src/ tests/` (or `ruff check <pkg>/ tests/`) — clean
