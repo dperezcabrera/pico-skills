@@ -123,9 +123,9 @@ pico-skills/
 │   ├── add-tests/SKILL.md
 │   └── pico-conventions/SKILL.md
 ├── .agents/skills/                # Symlinks for Codex
-│   ├── add-component/SKILL.md → ../../.claude/skills/add-component/SKILL.md
-│   ├── add-auth/SKILL.md → ../../.claude/skills/add-auth/SKILL.md
-│   ├── add-repository/SKILL.md → ...
+│   ├── add-component/SKILL.md  ../../.claude/skills/add-component/SKILL.md
+│   ├── add-auth/SKILL.md  ../../.claude/skills/add-auth/SKILL.md
+│   ├── add-repository/SKILL.md  ...
 │   └── ...
 ├── install.sh
 └── README.md
