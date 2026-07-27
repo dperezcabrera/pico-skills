@@ -1,6 +1,6 @@
 ---
 name: pico-conventions
-description: Pico-framework conventions, patterns and API reference. Use when writing code that uses pico-ioc, pico-boot, pico-fastapi, pico-sqlalchemy, pico-celery, pico-pydantic, or pico-agent.
+description: Pico-framework conventions, patterns and API reference for all pico-* packages. Use when writing code that uses any pico module (pico-ioc, pico-boot, pico-fastapi, pico-sqlalchemy, pico-celery, pico-pydantic, pico-agent, pico-client-auth, pico-server-auth, pico-actuator, pico-resilience, pico-caching, pico-otel, pico-scheduling, pico-httpx, pico-data-redis, pico-rabbitmq, pico-kafka, pico-testing).
 user-invocable: false
 ---
 
@@ -271,11 +271,67 @@ class Reports:
 
 Settings under `scheduling:`: `enabled` (kill-switch for tests/scripts).
 
-Note on pico-resilience (>= 0.2.0): `resilience.enabled` hot-reloads via
-`ConfigChanged`; requires an EventBus (`pico_ioc.event_bus`) or startup
-fails fast — opt out with `resilience.hot_reload: false`. pico-ioc >= 2.3.0.
-pico-sqlalchemy (>= 0.5.0): `database.migrations_path` runs Alembic
+Note on pico-sqlalchemy (>= 0.5.0): `database.migrations_path` runs Alembic
 `upgrade head` on startup (extra `[migrations]`).
+
+## pico-resilience
+
+Resilience AOP over pico-ioc interception, auto-discovered by pico-boot;
+zero-config. Decorate methods on `@component` classes (sync or async). When
+stacking with other AOP decorators, `@retryable` goes on top.
+
+```python
+from pico_resilience import retryable, circuit_breaker, timeout
+
+@component
+class PaymentGateway:
+    @retryable(max_attempts=3, backoff_seconds=0.1, retry_on=(Exception,))
+    @circuit_breaker(failure_threshold=5, reset_timeout_seconds=30.0)
+    @timeout(2.0)  # async methods only (asyncio time budget)
+    async def charge(self, order_id: str) -> dict: ...
+```
+
+Exceptions: `RetryExhaustedError`, `CircuitOpenError` (both subclass
+`PicoResilienceError`). Settings under `resilience:`: `enabled` (false = every
+interceptor becomes a pass-through), `hot_reload` (default true — re-reads
+`enabled` live on `ConfigChanged`; requires an EventBus (`pico_ioc.event_bus`)
+or startup fails fast, opt out with `resilience.hot_reload: false`). Needs
+pico-ioc >= 2.3.0.
+
+## pico-caching
+
+`@cacheable` over pico-ioc interception with a pluggable `CacheBackend`
+(built-in thread-safe in-memory LRU + TTL). Auto-discovered by pico-boot;
+zero-config. Installing pico-data-redis switches the backend to Redis
+automatically (the interceptor prefers a non-in-memory backend).
+
+```python
+from pico_caching import cacheable
+
+@component
+class Catalog:
+    @cacheable(ttl_seconds=60, key=lambda self, sku: sku)
+    async def price(self, sku: str) -> Decimal: ...
+```
+
+`key` defaults to the method arguments; `ttl_seconds` falls back to
+`cache.default_ttl_seconds`. Settings under `cache:`: `enabled` (false =
+pass-through), `default_ttl_seconds` (300.0), `max_entries` (1024).
+
+## pico-otel
+
+OpenTelemetry auto-instrumentation — install it and a pico-boot app gets
+tracing (FastAPI, SQLAlchemy, Celery — whichever are present), log correlation
+and Prometheus metrics written into the default `prometheus_client` registry
+that pico-actuator serves at `/actuator/metrics`. No code required: install +
+configure. Zero-config by default.
+
+Settings under `otel:`: `enabled`, `service_name` (`"pico-app"`), `endpoint`
+(OTLP), `traces_exporter` (`"auto"`), `traces_sample_ratio` (`1.0`),
+`prometheus_metrics` (`True`), and per-library toggles `instrument_logging`,
+`instrument_sqlalchemy`, `instrument_celery`, `instrument_fastapi` (all
+`True`). Public symbols: `OtelSettings`, `OtelBootstrap`,
+`OtelFastApiConfigurer`.
 
 ## pico-httpx
 
