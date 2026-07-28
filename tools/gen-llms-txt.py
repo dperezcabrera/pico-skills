@@ -12,6 +12,7 @@ Usage:  python gen-llms-txt.py /path/to/pico-foo [--write]
 ponytail: handles the fleet's one pattern (`from .mod import X` in __init__).
 A star-import or dynamic __all__ would need extending — none exist in the fleet.
 """
+
 import ast
 import sys
 from pathlib import Path
@@ -36,8 +37,11 @@ def _sig(node: ast.AST) -> str:
 
 
 def _doc1(node: ast.AST) -> str:
-    doc = ast.get_docstring(node) if isinstance(
-        node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)) else None
+    doc = (
+        ast.get_docstring(node)
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef))
+        else None
+    )
     return doc.strip().splitlines()[0] if doc else ""
 
 
@@ -50,8 +54,14 @@ def collect(pkg_dir: Path):
                 origin[a.asname or a.name] = (n.module, a.name)
         if isinstance(n, ast.Assign):
             for t in n.targets:
-                if isinstance(t, ast.Name) and t.id == "__all__" and isinstance(n.value, (ast.List, ast.Tuple)):
-                    all_names = [e.value for e in n.value.elts if isinstance(e, ast.Constant)]
+                if (
+                    isinstance(t, ast.Name)
+                    and t.id == "__all__"
+                    and isinstance(n.value, (ast.List, ast.Tuple))
+                ):
+                    all_names = [
+                        e.value for e in n.value.elts if isinstance(e, ast.Constant)
+                    ]
     # No __all__ declared: the public surface is what __init__ re-exports.
     if not all_names:
         all_names = [k for k in origin if not k.startswith("_")]
@@ -64,9 +74,15 @@ def collect(pkg_dir: Path):
             d, imp = {}, {}
             if f.exists():
                 for node in ast.parse(f.read_text()).body:
-                    if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+                    if isinstance(
+                        node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)
+                    ):
                         d[node.name] = node
-                    elif isinstance(node, ast.ImportFrom) and node.module and node.level == 1:
+                    elif (
+                        isinstance(node, ast.ImportFrom)
+                        and node.module
+                        and node.level == 1
+                    ):
                         for a in node.names:
                             imp[a.asname or a.name] = (node.module, a.name)
             cache[mod] = (d, imp)
@@ -86,7 +102,9 @@ def collect(pkg_dir: Path):
 
     out = []
     for name in all_names:
-        if name.isupper():  # module-level constants (LOGGER_NAME, PICO_*): infra, not codegen API
+        if (
+            name.isupper()
+        ):  # module-level constants (LOGGER_NAME, PICO_*): infra, not codegen API
             continue
         mod, orig = origin.get(name, (None, name))
         node = resolve(mod, orig)
@@ -118,6 +136,8 @@ def docs_sections(repo: Path):
         return []
     rows = []
     for child in sorted(d.iterdir()):
+        if child.name == "releases":  # gitignored; absent on a clean checkout
+            continue
         if child.is_dir():
             n = sum(1 for _ in child.rglob("*.md"))
             if n:
@@ -137,7 +157,9 @@ def find_pkg(repo: Path):
             return cand
     for base in (repo / "src", repo):
         if base.is_dir():
-            hit = next((p for p in base.glob("pico_*") if (p / "__init__.py").exists()), None)
+            hit = next(
+                (p for p in base.glob("pico_*") if (p / "__init__.py").exists()), None
+            )
             if hit:
                 return hit
     return None
@@ -154,7 +176,10 @@ def render(repo: Path):
     s = _summary(repo)
     if s:
         L += [f"> {s}", ""]
-    L += [f"Install: `pip install {name}`. Import surface: `from {pkg.name} import ...`.", ""]
+    L += [
+        f"Install: `pip install {name}`. Import surface: `from {pkg.name} import ...`.",
+        "",
+    ]
     snippet = usage(repo)
     if snippet:
         L += ["## Usage", "", "```python", snippet, "```", ""]
@@ -179,7 +204,9 @@ def main():
         return
     if write:
         (repo / "llms.txt").write_text(txt)
-        print(f"wrote {repo / 'llms.txt'} ({len(txt.splitlines())} lines, {txt.count('- `')} symbols)")
+        print(
+            f"wrote {repo / 'llms.txt'} ({len(txt.splitlines())} lines, {txt.count('- `')} symbols)"
+        )
     else:
         print(txt)
 
