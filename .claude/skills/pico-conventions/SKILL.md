@@ -55,8 +55,28 @@ from pico_ioc import (
     # Scopes
     ScopeManager,       # Manage custom scopes
     ContextVarScope,    # ContextVar-based scope implementation
+
+    # Introspection & extension (pico-ioc >= 2.4.0)
+    CustomScanner,      # Base for custom component scanners
+    ProviderMetadata,   # Scanner ABI: metadata returned by scan()
+    DeferredProvider,   # Scanner ABI: wraps a zero-arg provider callable
+    Provider,           # Scanner ABI: Callable[[], Any] alias
 )
 ```
+
+`container.get(Cls)` is typed: it returns `Cls`, not `Any` (pico-ioc >= 2.3.5), so
+IDEs and type-checkers infer the component. String keys still return `Any`.
+
+Enumerate the registry through the public seam — never `container._locator`
+(pico-ioc >= 2.4.0):
+
+```python
+container.keys()                 # -> list of registered keys (types and str names)
+container.metadata_for(key)      # -> ProviderMetadata | None (read-only)
+```
+
+Custom scanners import the ABI from the facade (`from pico_ioc import DeferredProvider, ...`);
+the internal `pico_ioc.factory` module was renamed to a private `_providers` in 2.4.0.
 
 ## Scopes
 
