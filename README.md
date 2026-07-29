@@ -28,7 +28,6 @@ The `.agents/skills/` directory contains symlinks to the canonical `.claude/skil
 | `/add-controller` | pico-fastapi | Add FastAPI controllers with route decorators |
 | `/add-celery-task` | pico-celery | Add Celery worker tasks and client senders |
 | `/add-validation` | pico-pydantic | Add Pydantic validation to component methods |
-| `/add-agent` | pico-agent | Add LLM agents and tools |
 | `/add-auth` | pico-client-auth | Add JWT authentication, role-based access control, custom role resolvers |
 | `/add-server-auth` | pico-server-auth | Add embedded auth server with JWT issuance, wallet login, JWKS |
 | `/add-actuator` | pico-actuator | Add health/info/metrics endpoints and HealthIndicator components |
@@ -80,7 +79,6 @@ Base skills (`pico-conventions`, `add-component`, `add-tests`) are always includ
 | `sqlalchemy` | `add-repository` |
 | `celery` | `add-celery-task` |
 | `pydantic` | `add-validation` |
-| `agent` | `add-agent` |
 | `auth` | `add-auth` |
 | `server-auth` | `add-server-auth` |
 | `actuator` | `add-actuator` |
@@ -99,7 +97,6 @@ cd ~ && curl -sL https://raw.githubusercontent.com/dperezcabrera/pico-skills/mai
 /add-controller /api/orders
 /add-celery-task send_notification
 /add-validation UserService
-/add-agent support_bot
 /add-auth DatabaseRoleResolver
 /add-app my-app
 /add-tests UserService
@@ -117,7 +114,6 @@ pico-skills/
 │   ├── add-controller/SKILL.md
 │   ├── add-celery-task/SKILL.md
 │   ├── add-validation/SKILL.md
-│   ├── add-agent/SKILL.md
 │   ├── add-auth/SKILL.md
 │   ├── add-app/SKILL.md
 │   ├── add-tests/SKILL.md
@@ -142,7 +138,6 @@ pico-skills/
 | [pico-celery](https://github.com/dperezcabrera/pico-celery) | [![PyPI](https://img.shields.io/pypi/v/pico-celery)](https://pypi.org/project/pico-celery/) | Celery task integration |
 | [pico-pydantic](https://github.com/dperezcabrera/pico-pydantic) | [![PyPI](https://img.shields.io/pypi/v/pico-pydantic)](https://pypi.org/project/pico-pydantic/) | Pydantic validation AOP |
 | [pico-client-auth](https://github.com/dperezcabrera/pico-client-auth) | [![PyPI](https://img.shields.io/pypi/v/pico-client-auth)](https://pypi.org/project/pico-client-auth/) | JWT authentication client |
-| [pico-agent](https://github.com/dperezcabrera/pico-agent) | [![PyPI](https://img.shields.io/pypi/v/pico-agent)](https://pypi.org/project/pico-agent/) | LLM agent framework |
 | [pico-server-auth](https://github.com/dperezcabrera/pico-server-auth) | [![PyPI](https://img.shields.io/pypi/v/pico-server-auth)](https://pypi.org/project/pico-server-auth/) | Embeddable auth server (JWT, wallet, JWKS) |
 | [pico-actuator](https://github.com/dperezcabrera/pico-actuator) | [![PyPI](https://img.shields.io/pypi/v/pico-actuator)](https://pypi.org/project/pico-actuator/) | Health, info and metrics endpoints |
 | [pico-resilience](https://github.com/dperezcabrera/pico-resilience) | [![PyPI](https://img.shields.io/pypi/v/pico-resilience)](https://pypi.org/project/pico-resilience/) | Retry, circuit breaker and timeout AOP |

@@ -1,6 +1,6 @@
 ---
 name: init-project
-description: Generate a complete pico-boot project using pico-initializer. Use when bootstrapping a new project with specific modules (fastapi, sqlalchemy, celery, pydantic, agent, auth).
+description: Generate a complete pico-boot project using pico-initializer. Use when bootstrapping a new project with specific modules (fastapi, sqlalchemy, celery, pydantic, auth).
 argument-hint: [project name] [modules...]
 allowed-tools: Read Grep Glob Write Edit Bash
 ---
@@ -15,7 +15,7 @@ Also available as a web app: https://dperezcabrera.github.io/pico-initializer/
 
 1. **Parse arguments** — extract project name and optional modules from `$ARGUMENTS`.
    - First word is the project name (e.g. `my-service`)
-   - Remaining words are modules: `fastapi`, `sqlalchemy`, `celery`, `pydantic`, `agent`, `auth`
+   - Remaining words are modules: `fastapi`, `sqlalchemy`, `celery`, `pydantic`, `auth`
    - If no modules specified, default to `fastapi`
 
 2. **Locate pico-initializer** — find the CLI:
@@ -80,7 +80,6 @@ Conditional files by module:
 | `sqlalchemy` | `<package>/models.py` — `AppBase` entity, `<package>/repositories.py` — `@repository` with `@query` |
 | `celery` | `<package>/tasks.py` — `@component` with `@task` methods |
 | `pydantic` | `@validate` decorator added to `services.py` (no extra file) |
-| `agent` | `<package>/tools.py` — `@tool` class, `<package>/agents.py` — `@agent` class |
 | `auth` | `<package>/secure_controller.py` — `@requires_role` + `@allow_anonymous` routes |
 
 Optional extras:
@@ -116,7 +115,6 @@ Do NOT add submodules or pico packages to the modules list — it's redundant an
 | SQLAlchemy | `sqlalchemy` | pico-sqlalchemy | Database ORM with `@repository` and `@query` |
 | Celery | `celery` | pico-celery | Background tasks with `@task` |
 | Pydantic | `pydantic` | pico-pydantic | Method-level validation with `@validate` |
-| Agent | `agent` | pico-agent | LLM agents with `@agent` and `@tool` |
 | Auth | `auth` | pico-client-auth | JWT authentication with `@requires_role` |
 
 ## Config JSON reference

@@ -1,6 +1,6 @@
 ---
 name: pico-conventions
-description: Pico-framework conventions, patterns and API reference for all pico-* packages. Use when writing code that uses any pico module (pico-ioc, pico-boot, pico-fastapi, pico-sqlalchemy, pico-celery, pico-pydantic, pico-agent, pico-client-auth, pico-server-auth, pico-actuator, pico-resilience, pico-caching, pico-otel, pico-scheduling, pico-httpx, pico-data-redis, pico-rabbitmq, pico-kafka, pico-testing).
+description: Pico-framework conventions, patterns and API reference for all pico-* packages. Use when writing code that uses any pico module (pico-ioc, pico-boot, pico-fastapi, pico-sqlalchemy, pico-celery, pico-pydantic, pico-client-auth, pico-server-auth, pico-actuator, pico-resilience, pico-caching, pico-otel, pico-scheduling, pico-httpx, pico-data-redis, pico-rabbitmq, pico-kafka, pico-testing).
 user-invocable: false
 ---
 
@@ -219,17 +219,6 @@ Custom role resolver (overrides default automatically via `on_missing_selector`)
 class MyRoleResolver:
     async def resolve(self, claims: TokenClaims, raw_claims: dict) -> list[str]:
         return raw_claims.get("roles", [])
-```
-
-## pico-agent
-
-```python
-from pico_agent import (
-    agent,              # @agent(name="...", capability=..., agent_type=...)
-    tool,               # @tool(name="...", description="...")
-    AgentType,          # ONE_SHOT, REACT, WORKFLOW
-    AgentCapability,    # FAST, SMART, REASONING, VISION, CODING
-)
 ```
 
 ## pico-server-auth

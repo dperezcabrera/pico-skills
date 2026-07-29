@@ -26,13 +26,12 @@ declare -A SKILL_MAP=(
     [sqlalchemy]="add-repository"
     [celery]="add-celery-task"
     [pydantic]="add-validation"
-    [agent]="add-agent"
     [auth]="add-auth"
     [server-auth]="add-server-auth"
     [actuator]="add-actuator"
 )
 
-ALL_PACKAGES="ioc boot fastapi sqlalchemy celery pydantic agent auth server-auth actuator"
+ALL_PACKAGES="ioc boot fastapi sqlalchemy celery pydantic auth server-auth actuator"
 
 usage() {
     cat <<'USAGE'
@@ -63,7 +62,6 @@ Available packages:
   sqlalchemy  add-repository
   celery      add-celery-task
   pydantic    add-validation
-  agent       add-agent
   auth        add-auth
   server-auth add-server-auth
   actuator    add-actuator

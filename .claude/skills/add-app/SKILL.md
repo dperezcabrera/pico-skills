@@ -102,7 +102,6 @@ dependencies = [
     # "pico-sqlalchemy>=0.1.0",
     # "pico-celery>=0.1.0",
     # "pico-pydantic>=0.1.0",
-    # "pico-agent>=0.1.0",
 ]
 ```
 
