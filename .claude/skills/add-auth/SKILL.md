@@ -186,7 +186,7 @@ auth_client:
     - ML-DSA-65
 ```
 
-ML-DSA tokens use the `AKP` JWK key type with base64url-encoded raw public keys (per draft-ietf-cose-dilithium). The `TokenValidator` automatically dispatches ML-DSA tokens to `pqc_jwt` (liboqs) and RS256 tokens to python-jose.
+ML-DSA tokens use the `AKP` JWK key type with base64url-encoded raw public keys (per draft-ietf-cose-dilithium). The `TokenValidator` automatically dispatches ML-DSA tokens to `pqc_jwt` (liboqs) and RS256 tokens to PyJWT.
 
 JWKS response with ML-DSA key:
 
