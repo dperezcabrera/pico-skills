@@ -171,10 +171,14 @@ If `gh release create` fails with 401/403:
 - [ ] Update pico-initializer (single source of truth for generated projects):
   - Bump the constraint for this package in `pico-initializer/js/versions.js`
     (`~=NEW_VERSION` for 0.x packages; keep the `<NEXT_MAJOR` cap for 1.x+)
-  - Mirror the same constraint in `pico-initializer/test/Dockerfile` and
-    `pico-initializer/test/Dockerfile.integration` (pre-installed deps)
+  - Nothing to mirror: `test/Dockerfile` and `test/Dockerfile.integration`
+    derive their pre-installed deps from `versions.js` at build time
   - Commit: `chore: bump PACKAGE to NEW_VERSION in generated projects`
   - Push (CI runs the integration suite against the new release before deploying)
+- [ ] Publish a new release train in `pico-bom` when the validated set changes:
+  - Copy the newest `YYYY.MM.txt` to a new one, bump the changed pins, and add
+    a row to the README table - never edit a published train, builds pin to it
+  - CI validates the newest train automatically (`compose_check.py`)
 
 ## Rollback (if needed)
 

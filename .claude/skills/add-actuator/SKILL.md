@@ -21,7 +21,7 @@ Add pico-actuator health/info endpoints for: $ARGUMENTS
 
 1. **Add dependency** to `pyproject.toml`:
    ```toml
-   "pico-actuator>=0.1.0",
+   "pico-actuator>=0.2.1",
    ```
    The endpoints appear with zero config — pico-boot auto-discovers the module.
 

@@ -22,7 +22,7 @@ Supports ML-DSA-65 (Dilithia), Ed25519 (Solana), secp256k1 (Ethereum) wallet sig
 
 1. **Add dependency** to `pyproject.toml`:
    ```toml
-   "pico-server-auth>=0.1.0",
+   "pico-server-auth>=0.2.1",
    ```
 
 2. **Add config** to `application.yaml`:

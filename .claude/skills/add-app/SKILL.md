@@ -96,12 +96,12 @@ fastapi:
 name = "$ARGUMENTS"
 requires-python = ">=3.11"
 dependencies = [
-    "pico-ioc>=2.2.0",
-    "pico-boot>=0.1.0",
-    # "pico-fastapi>=0.1.0",
-    # "pico-sqlalchemy>=0.1.0",
-    # "pico-celery>=0.1.0",
-    # "pico-pydantic>=0.1.0",
+    "pico-ioc>=2.5.1",
+    "pico-boot>=0.2.0",
+    # "pico-fastapi>=0.4.0",
+    # "pico-sqlalchemy>=0.5.1",
+    # "pico-celery>=0.2.3",
+    # "pico-pydantic>=0.2.3",
 ]
 ```
 
