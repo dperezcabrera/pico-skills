@@ -99,7 +99,7 @@ dependencies = [
     "pico-ioc>=2.5.1",
     "pico-boot>=0.2.0",
     # "pico-fastapi>=0.4.1",
-    # "pico-sqlalchemy>=0.5.1",
+    # "pico-sqlalchemy>=0.5.2",
     # "pico-celery>=0.2.3",
     # "pico-pydantic>=0.2.3",
 ]
